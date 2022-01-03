@@ -40,28 +40,6 @@ def createTextFile(soup):
     textFile.write(soup.find('pre').getText())
     textFile.close()
 
-def notpresent(line,s1,s2,s3,s4,s5): #return true if string-s1 s2 s3 are not in string s
-    condition1 = False
-    condition2 = False
-    condition3 = False
-    condition4 = False
-    condition5 = False
-    if s1 not in line:
-        condition1 = True
-    if s2 not in line:
-        condition2 = True
-    if s3 not in line:
-        condition3 = True
-    if s4 not in line:
-        condition4 = True
-    if s5 not in line:
-        condition5 = True
-    
-    if (condition1 and condition2 and condition3 and condition4 and condition5):
-        return True
-    else:
-        return False
-
 def createDict(studentResult):
     sub=""
     code=""
@@ -77,12 +55,8 @@ def createDict(studentResult):
     for line in lines:   #removing empty lines "" element
         if line!="":
             newline.append(line)
-    
-    # for line in newline:   #count number of student appeared
-    #     if "20" in line:   #if line have "20"(part of regno) 
-    #         if(notpresent(line,"GRADE SHEET","Subject Code","Subject Credit")): #"20" should be not part of these three
-    #             count = count+1
-    print("****************************************************************",count)
+
+    #print("****************************************************************",count)
 
     for i in range(len(newline)):   #iterate each line
         if "Subject Code" in newline[i]:
@@ -115,14 +89,14 @@ def createDict(studentResult):
                     marks["total"] = total
                     marks["grade"] = point
 
-                    print(reg)
+                    #print(reg)
 
                     if reg in studentResult:
                         studentResult[reg].update({code:marks})
                     else:
                         studentResult[reg] = {code:marks}
 
-    print(sub,code)       
+    #print(sub,code)       
 
 def toJSON(studentResult):
     json_obj = json.dumps(studentResult, indent = 4)
