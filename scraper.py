@@ -4,9 +4,9 @@ import json
 
 headers = {"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36"}
 URL = "https://result.smtech.in/"
-exam = "" #exam link
+exam = "https://result.smtech.in/ex21.php?eid=MAY/JUNE%202020%20SEMESTER%20EXAMINATIONS" #exam link
 
-jsonFileName = ""
+jsonFileName = "may_june_2020_exam"
 
 def scrap():
     allSubLink = []  #all branch and subject link
@@ -40,7 +40,31 @@ def createTextFile(soup):
     textFile.write(soup.find('pre').getText())
     textFile.close()
 
+def notpresent(line,s1,s2,s3,s4,s5): #return true if string-s1 s2 s3 are not in string s
+    condition1 = False
+    condition2 = False
+    condition3 = False
+    condition4 = False
+    condition5 = False
+    if s1 not in line:
+        condition1 = True
+    if s2 not in line:
+        condition2 = True
+    if s3 not in line:
+        condition3 = True
+    if s4 not in line:
+        condition4 = True
+    if s5 not in line:
+        condition5 = True
+    
+    if (condition1 and condition2 and condition3 and condition4 and condition5):
+        return True
+    else:
+        return False
+
 def createDict(studentResult):
+    sub=""
+    code=""
     count = 0
 
     text = open("result.txt","r")
@@ -53,69 +77,58 @@ def createDict(studentResult):
     for line in lines:   #removing empty lines "" element
         if line!="":
             newline.append(line)
+    
+    # for line in newline:   #count number of student appeared
+    #     if "20" in line:   #if line have "20"(part of regno) 
+    #         if(notpresent(line,"GRADE SHEET","Subject Code","Subject Credit")): #"20" should be not part of these three
+    #             count = count+1
+    print("****************************************************************",count)
 
-    if len(newline)>1:  #find number of student appeared (count)
-        for i in range(6,len(newline)):
-            if (newline[i].split()[0])[0:2]=="20":
-                count = count+1
+    for i in range(len(newline)):   #iterate each line
+        if "Subject Code" in newline[i]:
+            code = newline[i][16:22]
+        if "Subject Title" in newline[i]:
+            sub = newline[i][16:]
+            sub = sub.strip()
 
-        code = newline[2][16:22]  
-        sub = newline[3][16:]
-        credit = newline[4][16:]
-        
-        for line in range(count):
-            reg = newline[6+line].split()[0]
-            if credit==" 0.0":   #if credit is zero
-                internal = "Nil"
-                ext = "Nil"
-                tot = "Nil"
-                point = newline[6+line].split()[1]
-            else:
-                internal = newline[6+line].split()[1]
-                ext = newline[6+line].split()[2]
-                tot = newline[6+line].split()[3]
-                point = newline[6+line].split()[4]
-                     
-            marks = {}
+        if "20" in newline[i]: #if line has "20" [part of regno]
+            res = newline[i].split()  # spilt line and make a list
+            if ((len(res)==2 or len(res)==5)):  # line with grade should be of 2 or 5 length
+                if(len(res[0])==9):  # and first element i.e. regno should be of length 9 only then assign values
+                    reg = res[0]
+                    if len(res)==2:
+                        internal = "Nil"
+                        ext = "Nil"
+                        total = "Nil"
+                        point = "P"
+                    else:
+                        internal = res[1]
+                        ext = res[2]
+                        total = res[3]
+                        point = res[4]
 
-            marks["sub"] = sub
-            marks["int"] = internal
-            marks["ext"] = ext
-            marks["total"] = tot
-            marks["grade"] = point
-            marks["credit"] = credit
+                    marks = {}
 
-            if reg in studentResult:
-                studentResult[reg].update({code:marks})
-            else:
-                studentResult[reg] = {code:marks}
+                    marks["sub"] = sub
+                    marks["int"] = internal
+                    marks["ext"] = ext
+                    marks["total"] = total
+                    marks["grade"] = point
+
+                    print(reg)
+
+                    if reg in studentResult:
+                        studentResult[reg].update({code:marks})
+                    else:
+                        studentResult[reg] = {code:marks}
+
+    print(sub,code)       
 
 def toJSON(studentResult):
     json_obj = json.dumps(studentResult, indent = 4)
   
     with open("{}.json".format(jsonFileName), "w") as outfile:
         outfile.write(json_obj)
-
-        
-
-    
-
-
-# print(newline)
-
-# marks = newline[6].split()
-# print(marks)
-
-# print(float(newline[6].split()[2]))  
-
-# if len(newline)!=0:
-#     info["code"] = newline[2][16:]
-#     info["sub"] = newline[3][16:]
-#     info["credit"] = float(newline[4][16:])
-#     info["int"] = float(newline[6].split()[1])
-#     info["ext"] = float(newline[6].split()[2])
-#     info["tot"] = float(newline[6].split()[2])
-#     info["cgpa"] = float(newline[6].split()[2])
 
 scrap()    
 
