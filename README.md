@@ -1,7 +1,6 @@
 # Web Scraping using Python
 
-Python Code to scrape SMIT Result from 
-smitresults : https://result.smtech.in/
+Python Code to scrape SMIT Result from [SmitResults](https://result.smtech.in/)
 
 just paste
 
