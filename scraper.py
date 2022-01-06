@@ -51,11 +51,7 @@ def createDict(studentResult):
     lines = text.split("\n")   #create a list if all lines as element including empty lines "" 
     
     newline = []
-    
-    for line in lines:   #removing empty lines "" element
-        if line!="":
-            newline.append(line)
-
+  
     #print("****************************************************************",count)
 
     for i in range(len(newline)):   #iterate each line
@@ -67,7 +63,7 @@ def createDict(studentResult):
 
         if "20" in newline[i]: #if line has "20" [part of regno]
             res = newline[i].split()  # spilt line and make a list
-            if ((len(res)==2 or len(res)==5)):  # line with grade should be of 2 or 5 length
+            if ((len(res)==2 or len(res)==5)):  # line with result should be of 2 or 5 length
                 if(len(res[0])==9):  # and first element i.e. regno should be of length 9 only then assign values
                     reg = res[0]
                     if len(res)==2:
