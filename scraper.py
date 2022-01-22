@@ -50,7 +50,7 @@ def createDict(studentResult):
     text = text.read().strip() #remove all extra space before and after every line
     lines = text.split("\n")   #create a list if all lines as element including empty lines "" 
     
-    newline = []
+    newline = lines
   
     #print("****************************************************************",count)
 
